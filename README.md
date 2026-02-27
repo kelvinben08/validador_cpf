@@ -1,27 +1,29 @@
-# 🪪 Validador de CPF
-- Programa em Python que verifica se um CPF informado possui **exatamente 11 dígitos** e contém **apenas números**.
-- Obs.: esta versão valida somente o **formato** (não valida os dígitos verificadores do CPF real).
+# ✅ Validador de CPF (Python)
+- Programa em Python que valida se um CPF possui formato válido.
 
 ---
 
-### 📦 Versão
-- **v1.0**
+### 📌 Funcionalidades
+- Aceita CPF com ou sem pontuação  
+- Remove automaticamente pontuações (`.` `-` espaço)  
+- Verifica caracteres permitidos  
+- Valida se o CPF possui exatamente 11 dígitos  
+- Exibe mensagens específicas para erros de entrada  
 
 ---
 
-### 🚀 Funcionalidades
-- Verifica se o CPF tem 11 caracteres
-- Verifica se contém apenas números
-- Exibe mensagem informando se o formato é válido
+### 🧠 Conceitos aplicados
+- Funções com responsabilidade única  
+- Sanitização de dados (normalização)  
+- Pipeline de validação  
+- Boas práticas (PEP8)  
+- Docstrings  
 
 ---
 
-### ▶️ Como executar
-
-1. Clone o repositório
-2. Execute o arquivo `main.py`
-
----
-
-### 🛠 Tecnologias
-- Python 3.x
+### 🚀 Versão
+- v1.1:
+  - Sanitização de CPF
+  - Verificação de caracteres permitidos 
+  - Separação de responsabilidades
+  - Mensagens de erro específicas
