@@ -2,10 +2,11 @@
 Validador de CPF
 
 Programa que verifica se o CPF é válido ou não.
-Versão: 1.1
+Versão: 1.2
 """
 TAMANHO_LINHA = 78
 TITULO = "Validador de CPF"
+SEPARADORES = {".", "-", " "}
 
 
 def limpar_cpf(cpf: str) -> str:
@@ -14,27 +15,66 @@ def limpar_cpf(cpf: str) -> str:
 
     Args:
         cpf (str): CPF informado pelo usuário.
+
     Returns:
         str: CPF limpo somente com números.
     """
+    cpf_limpo = cpf
 
-    cpf_limpo = cpf.replace(".", "").replace("-", "").replace(" ", "")
+    for separador in SEPARADORES:
+        cpf_limpo = cpf_limpo.replace(separador, "")
 
     return cpf_limpo
 
 
-def validar_cpf(cpf_limpo: str) -> bool:
+def calcular_digito(base: str, peso_inicial: int) -> int:
     """
-    Valida se o CPF possui exatamente 11 dígitos numéricos.
+    Calcula um dígito verificador do CPF a partir de uma base numérica.
 
     Args:
-        cpf_limpo (str): CPF já limpo.
+        base (str): Sequência de dígitos usada no cálculo (9 ou 10 dígitos).
+        peso_inicial (int): Peso inicial do cálculo (10 ou 11).
 
     Returns:
-        bool: True se válido no formato, False caso contrário.
+        int: Dígito verificador calculado (0 a 9).
     """
+    soma = 0
+    peso = peso_inicial
 
-    return len(cpf_limpo) == 11 and cpf_limpo.isdigit()
+    for digito in base:
+        soma += int(digito) * peso
+        peso -= 1
+
+    resto = soma % 11
+    return 0 if resto < 2 else 11 - resto
+
+
+def validar_cpf(cpf_limpo: str) -> bool:
+    """
+    Valida um CPF limpo (apenas dígitos), incluindo os dígitos verificadores.
+
+    Args:
+        cpf_limpo (str): CPF já limpo, contendo apenas números.
+
+    Returns:
+        bool: True se o CPF for válido, caso contrário False.
+    """
+    if (
+        len(cpf_limpo) != 11
+        or not cpf_limpo.isdigit()
+        or len(set(cpf_limpo)) == 1
+    ):
+        return False
+
+    base9 = cpf_limpo[:9]
+    base10 = cpf_limpo[:10]
+    digito10 = int(cpf_limpo[9])
+    digito11 = int(cpf_limpo[10])
+
+    digito10_calculado = calcular_digito(base9, 10)
+    digito11_calculado = calcular_digito(base10, 11)
+
+    return digito10_calculado == digito10 and digito11_calculado == digito11
 
 
 def caracteres_permitidos(cpf: str) -> bool:
@@ -42,14 +82,13 @@ def caracteres_permitidos(cpf: str) -> bool:
     Verifica se os caracteres do CPF são permitidos.
 
     Args:
-        cpf (str): CPF informado pelo usuário
+        cpf (str): CPF informado pelo usuário.
 
     Returns:
         bool: True se for permitido, False caso contrário.
     """
-
     for caractere in cpf:
-        if caractere.isdigit() or caractere == '.' or caractere == '-' or caractere == ' ':
+        if caractere.isdigit() or caractere in SEPARADORES:
             continue
         else:
             return False
@@ -70,13 +109,17 @@ def main():
 
     if not caracteres_permitidos(cpf):
         print("Erro: CPF contém caracteres inválidos.")
-    else:
-        cpf_limpo = limpar_cpf(cpf)
-        if not validar_cpf(cpf_limpo):
-            print("Erro: CPF deve ter exatamente 11 dígitos.")
-        else:
-            print("CPF válido:", cpf_limpo)
+        print("=" * TAMANHO_LINHA)
+        return
 
+    cpf_limpo = limpar_cpf(cpf)
+
+    if not validar_cpf(cpf_limpo):
+        print("Erro: CPF inválido.")
+        print("=" * TAMANHO_LINHA)
+        return
+
+    print("CPF válido:", cpf_limpo)
     print("=" * TAMANHO_LINHA)
 
 
